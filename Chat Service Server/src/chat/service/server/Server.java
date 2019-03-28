@@ -24,7 +24,7 @@ public class Server extends javax.swing.JFrame {
     static DataInputStream din;
     static DataOutputStream dout;
     
-    static int chatkey;
+    static int chatkey= -1;
     
     public Server() {
         initComponents();
@@ -170,9 +170,16 @@ public class Server extends javax.swing.JFrame {
         String msgout = server_text.getText();
         try {
             msg_area.append("SERVER : "+msgout+"\n");
+            if(chatkey<1 && chatkey>25)
+            {
+               msg_area.append("ERROR : Chat key not set. Client will recieve incorrect message. \n");
+               msgout ="ERROR - Chat key not set by server. \n"; 
+               dout.writeUTF(msgout);
+            }
+            else{
             msgout = encrypt(msgout,chatkey);
             dout.writeUTF(msgout);
-            // TODO add your handling code here:
+            }
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
